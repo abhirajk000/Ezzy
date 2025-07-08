@@ -14,6 +14,14 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [lastActivity, setLastActivity] = useState(Date.now())
+  const [showPasswordInput, setShowPasswordInput] = useState(false)
+  
+  // Fake copy-paste tool states
+  const [sourceText, setSourceText] = useState('')
+  const [destinationText, setDestinationText] = useState('')
+  const [wordCount, setWordCount] = useState(0)
+  const [showDifferences, setShowDifferences] = useState(false)
+  const [differences, setDifferences] = useState<string[]>([])
 
   // Auto-logout functionality
   const handleActivity = useCallback(() => {
@@ -26,6 +34,80 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
     setPassword('')
     setLastActivity(Date.now())
   }, [])
+
+  // Fake copy-paste tool functions
+  const handleCopyText = () => {
+    setDestinationText(sourceText)
+    navigator.clipboard.writeText(sourceText)
+  }
+
+  const handlePasteText = async () => {
+    try {
+      const text = await navigator.clipboard.readText()
+      setDestinationText(text)
+    } catch (err) {
+      // Fallback if clipboard access is denied
+      setDestinationText(sourceText)
+    }
+  }
+
+  const handleClearAll = () => {
+    setSourceText('')
+    setDestinationText('')
+    setWordCount(0)
+  }
+
+  const handleFormatText = () => {
+    const formatted = destinationText
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line.length > 0)
+      .join('\n')
+    setDestinationText(formatted)
+  }
+
+  const handleWordCount = () => {
+    const words = destinationText.trim().split(/\s+/).filter(word => word.length > 0)
+    setWordCount(words.length)
+  }
+
+  const handleCompareDifferences = () => {
+    const sourceLines = sourceText.split('\n')
+    const destLines = destinationText.split('\n')
+    const diffs: string[] = []
+    
+    const maxLines = Math.max(sourceLines.length, destLines.length)
+    
+    for (let i = 0; i < maxLines; i++) {
+      const sourceLine = sourceLines[i] || ''
+      const destLine = destLines[i] || ''
+      
+      if (sourceLine !== destLine) {
+        if (sourceLine && destLine) {
+          diffs.push(`Line ${i + 1}: Changed from "${sourceLine}" to "${destLine}"`)
+        } else if (sourceLine && !destLine) {
+          diffs.push(`Line ${i + 1}: Removed "${sourceLine}"`)
+        } else if (!sourceLine && destLine) {
+          diffs.push(`Line ${i + 1}: Added "${destLine}"`)
+        }
+      }
+    }
+    
+    if (diffs.length === 0) {
+      diffs.push('No differences found - texts are identical')
+    }
+    
+    setDifferences(diffs)
+    setShowDifferences(true)
+  }
+
+  const handleSourceTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setSourceText(e.target.value)
+  }
+
+  const handleDestinationTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setDestinationText(e.target.value)
+  }
 
   // Check if user is already authenticated on mount
   useEffect(() => {
@@ -85,14 +167,9 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
     return () => clearInterval(interval)
   }, [isAuthenticated, lastActivity, handleLogout])
 
-  const handleKeyPress = async (e: React.KeyboardEvent) => {
+  const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       setError('')
-      setIsLoading(true)
-
-      // Simulate a brief loading delay for better UX
-      await new Promise(resolve => setTimeout(resolve, 500))
-
       const correctPassword = '123#' // Change this to your desired password
 
       if (password === correctPassword) {
@@ -102,11 +179,8 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
         localStorage.setItem('ezzy-authenticated', 'true')
         localStorage.setItem('ezzy-last-activity', now.toString())
       } else {
-        
         setPassword('') // Clear the password field immediately
       }
-
-      setIsLoading(false)
     }
   }
 
@@ -130,54 +204,135 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="bg-slate-800/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/30 shadow-2xl">
-          {/* Header */}
-        
-
-          {/* Password Form */}
-          <div className="space-y-6">
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyPress={handleKeyPress}
-                className="w-full p-4 bg-slate-900/60 border border-slate-600/50 rounded-xl text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 transition-all duration-300 pr-12"
-                disabled={isLoading}
-                autoFocus
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-300 transition-colors"
-                disabled={isLoading}
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 p-4">
+      {/* Fake Copy-Paste Tool Section */}
+      <div className="max-w-4xl mx-auto pt-8">
+        <div className="bg-slate-800/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/30 shadow-2xl mb-8">
+          <h2 className="text-2xl font-bold text-slate-100 mb-6 text-center">Text Copy & Paste Tool</h2>
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Source Text Area */}
+            <div>
+              <label className="block text-slate-300 text-sm font-medium mb-2">Source Text</label>
+              <textarea
+                 value={sourceText}
+                 onChange={handleSourceTextChange}
+                 className="w-full h-40 p-4 bg-slate-900/60 border border-slate-600/50 rounded-xl text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 transition-all duration-300 resize-none"
+                 placeholder="Paste your text here..."
+               />
+              <button 
+                 onClick={handleCopyText}
+                 className="mt-3 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg transition-colors"
+               >
+                 Copy Text
+               </button>
+            </div>
+            
+            {/* Destination Text Area */}
+            <div>
+              <label className="block text-slate-300 text-sm font-medium mb-2">Destination</label>
+              <textarea
+                 value={destinationText}
+                 onChange={handleDestinationTextChange}
+                 className="w-full h-40 p-4 bg-slate-900/60 border border-slate-600/50 rounded-xl text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 transition-all duration-300 resize-none"
+                 placeholder="Text will appear here..."
+               />
+              <button 
+                 onClick={handlePasteText}
+                 className="mt-3 w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-colors"
+               >
+                 Paste Text
+               </button>
+            </div>
+          </div>
+          
+          {/* Tool Options */}
+          <div className="mt-6 flex flex-wrap gap-4 justify-center">
+             <button 
+               onClick={handleClearAll}
+               className="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2 rounded-lg transition-colors"
+             >
+               Clear All
+             </button>
+             <button 
+               onClick={handleFormatText}
+               className="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2 rounded-lg transition-colors"
+             >
+               Format Text
+             </button>
+             <button 
+                onClick={handleWordCount}
+                className="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2 rounded-lg transition-colors"
               >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                Word Count: {wordCount}
+              </button>
+              <button 
+                onClick={handleCompareDifferences}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Compare Differences
               </button>
             </div>
-
-            {error && (
-              <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3">
-                <p className="text-red-300 text-sm font-medium">{error}</p>
+            
+            {/* Differences Display */}
+            {showDifferences && (
+              <div className="mt-6 bg-slate-900/60 border border-slate-600/50 rounded-xl p-4">
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="text-slate-200 font-medium">Text Comparison Results</h3>
+                  <button 
+                    onClick={() => setShowDifferences(false)}
+                    className="text-slate-400 hover:text-slate-200 transition-colors"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div className="max-h-40 overflow-y-auto space-y-2">
+                  {differences.map((diff, index) => (
+                    <div 
+                      key={index}
+                      className="text-sm text-slate-300 bg-slate-800/50 p-2 rounded border-l-4 border-purple-500"
+                    >
+                      {diff}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
-
-            {isLoading && (
-              <div className="flex items-center justify-center space-x-2 text-slate-300">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-slate-300"></div>
-                <span>Verifying...</span>
-              </div>
-            )}
-          </div>
-
-          {/* Hint */}
-          <div className="mt-6 text-center">
-           
-          </div>
         </div>
       </div>
+
+      {/* Floating Round Button */}
+      {!showPasswordInput && (
+        <button
+          onClick={() => setShowPasswordInput(true)}
+          className="fixed bottom-4 right-4 w-12 h-12 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 z-50"
+        >
+          <span className="text-white text-2xl font-light">+</span>
+        </button>
+      )}
+
+      {/* Password Input Field */}
+      {showPasswordInput && (
+        <div className="fixed bottom-4 right-4 w-64">
+          <div className="bg-gray-900/95 backdrop-blur-sm rounded-lg p-4 border border-gray-700/50 shadow-xl">
+            <div className="flex items-center justify-between mb-2">
+             
+            </div>
+            <input
+              type="text"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyPress={handleKeyPress}
+
+              className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+              autoFocus
+            />
+            {error && (
+              <p className="text-red-400 text-sm mt-2">{error}</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

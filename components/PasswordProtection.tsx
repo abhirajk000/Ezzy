@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Lock, Eye, EyeOff } from 'lucide-react'
 
 interface PasswordProtectionProps {
   children: React.ReactNode
@@ -10,9 +9,7 @@ interface PasswordProtectionProps {
 export default function PasswordProtection({ children }: PasswordProtectionProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
   const [lastActivity, setLastActivity] = useState(Date.now())
   const [showPasswordInput, setShowPasswordInput] = useState(false)
   
@@ -45,7 +42,7 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
     try {
       const text = await navigator.clipboard.readText()
       setDestinationText(text)
-    } catch (err) {
+    } catch {
       // Fallback if clipboard access is denied
       setDestinationText(sourceText)
     }

@@ -14,12 +14,10 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [lastActivity, setLastActivity] = useState(Date.now())
-  const [timeRemaining, setTimeRemaining] = useState(30 * 60) // 30 minutes in seconds
 
   // Auto-logout functionality
   const handleActivity = useCallback(() => {
     setLastActivity(Date.now())
-    setTimeRemaining(30 * 60) // Reset to 30 minutes
   }, [])
 
   const handleLogout = useCallback(() => {
@@ -27,7 +25,6 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
     localStorage.removeItem('ezzy-authenticated')
     setPassword('')
     setLastActivity(Date.now())
-    setTimeRemaining(30 * 60)
   }, [])
 
   // Check if user is already authenticated on mount
@@ -40,10 +37,9 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
       const thirtyMinutes = 30 * 60 * 1000 // 30 minutes in milliseconds
       
       if (timeSinceLastActivity < thirtyMinutes) {
-        setIsAuthenticated(true)
-        setLastActivity(parseInt(lastActivityTime))
-        setTimeRemaining(Math.max(0, Math.floor((thirtyMinutes - timeSinceLastActivity) / 1000)))
-      } else {
+         setIsAuthenticated(true)
+         setLastActivity(parseInt(lastActivityTime))
+       } else {
         // Session expired
         localStorage.removeItem('ezzy-authenticated')
         localStorage.removeItem('ezzy-last-activity')
@@ -82,9 +78,6 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
         return
       }
       
-      const remaining = Math.max(0, Math.floor((thirtyMinutes - timeSinceLastActivity) / 1000))
-      setTimeRemaining(remaining)
-      
       // Update localStorage with current activity time
       localStorage.setItem('ezzy-last-activity', lastActivity.toString())
     }, 1000)
@@ -106,9 +99,8 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
     if (password === correctPassword) {
       setIsAuthenticated(true)
       const now = Date.now()
-      setLastActivity(now)
-      setTimeRemaining(30 * 60)
-      localStorage.setItem('ezzy-authenticated', 'true')
+       setLastActivity(now)
+       localStorage.setItem('ezzy-authenticated', 'true')
       localStorage.setItem('ezzy-last-activity', now.toString())
     } else {
       setError('Incorrect password. Please try again.')
@@ -117,12 +109,7 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
     setIsLoading(false)
   }
 
-  // Format time remaining for display
-  const formatTimeRemaining = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60)
-    const remainingSeconds = seconds % 60
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
-  }
+
 
   if (isAuthenticated) {
     return (

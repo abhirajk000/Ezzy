@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { pasteOperations, PasteItem } from '../lib/supabase'
-import { Copy, Plus, Trash2, FileText, Clock, Hash, Activity, Globe } from 'lucide-react'
+import { Copy, Plus, Trash2, FileText, Clock, Hash } from 'lucide-react'
 import PasswordProtection from '../components/PasswordProtection'
 
 export default function Home() {

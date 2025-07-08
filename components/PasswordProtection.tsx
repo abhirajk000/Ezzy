@@ -93,7 +93,7 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
       // Simulate a brief loading delay for better UX
       await new Promise(resolve => setTimeout(resolve, 500))
 
-      const correctPassword = 'admin123' // Change this to your desired password
+      const correctPassword = '123#' // Change this to your desired password
 
       if (password === correctPassword) {
         setIsAuthenticated(true)
@@ -102,7 +102,7 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
         localStorage.setItem('ezzy-authenticated', 'true')
         localStorage.setItem('ezzy-last-activity', now.toString())
       } else {
-        setError('Incorrect password. Please try again.')
+        
         setPassword('') // Clear the password field immediately
       }
 
@@ -121,7 +121,7 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
             onClick={handleLogout}
             className="bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 hover:text-white px-4 py-2 rounded-lg backdrop-blur-sm border border-slate-600/50 transition-all duration-300 text-sm font-medium shadow-lg"
           >
-            Logout
+            X
           </button>
         </div>
         {children}
@@ -134,19 +134,7 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
       <div className="w-full max-w-md">
         <div className="bg-slate-800/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/30 shadow-2xl">
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center mb-4">
-              <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg">
-                <Lock className="w-6 h-6 text-white" />
-              </div>
-            </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2 font-orbitron">
-              Access Required
-            </h1>
-            <p className="text-slate-300 text-sm">
-              Please enter the password to access Ezzy
-            </p>
-          </div>
+        
 
           {/* Password Form */}
           <div className="space-y-6">
@@ -156,7 +144,6 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Enter password and press Enter"
                 className="w-full p-4 bg-slate-900/60 border border-slate-600/50 rounded-xl text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 transition-all duration-300 pr-12"
                 disabled={isLoading}
                 autoFocus

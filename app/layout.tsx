@@ -17,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} ${orbitron.variable}`}>{children}</body>
+      <body className={`${inter.className} ${orbitron.variable}`} suppressHydrationWarning={true}>{children}</body>
     </html>
   )
 }

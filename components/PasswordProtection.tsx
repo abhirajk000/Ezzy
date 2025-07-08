@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Lock, Eye, EyeOff } from 'lucide-react'
 
 interface PasswordProtectionProps {
@@ -13,14 +13,84 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [lastActivity, setLastActivity] = useState(Date.now())
+  const [timeRemaining, setTimeRemaining] = useState(30 * 60) // 30 minutes in seconds
+
+  // Auto-logout functionality
+  const handleActivity = useCallback(() => {
+    setLastActivity(Date.now())
+    setTimeRemaining(30 * 60) // Reset to 30 minutes
+  }, [])
+
+  const handleLogout = useCallback(() => {
+    setIsAuthenticated(false)
+    localStorage.removeItem('ezzy-authenticated')
+    setPassword('')
+    setLastActivity(Date.now())
+    setTimeRemaining(30 * 60)
+  }, [])
 
   // Check if user is already authenticated on mount
   useEffect(() => {
     const authStatus = localStorage.getItem('ezzy-authenticated')
-    if (authStatus === 'true') {
-      setIsAuthenticated(true)
+    const lastActivityTime = localStorage.getItem('ezzy-last-activity')
+    
+    if (authStatus === 'true' && lastActivityTime) {
+      const timeSinceLastActivity = Date.now() - parseInt(lastActivityTime)
+      const thirtyMinutes = 30 * 60 * 1000 // 30 minutes in milliseconds
+      
+      if (timeSinceLastActivity < thirtyMinutes) {
+        setIsAuthenticated(true)
+        setLastActivity(parseInt(lastActivityTime))
+        setTimeRemaining(Math.max(0, Math.floor((thirtyMinutes - timeSinceLastActivity) / 1000)))
+      } else {
+        // Session expired
+        localStorage.removeItem('ezzy-authenticated')
+        localStorage.removeItem('ezzy-last-activity')
+      }
     }
   }, [])
+
+  // Activity tracking
+  useEffect(() => {
+    if (!isAuthenticated) return
+
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click']
+    
+    events.forEach(event => {
+      document.addEventListener(event, handleActivity, true)
+    })
+
+    return () => {
+      events.forEach(event => {
+        document.removeEventListener(event, handleActivity, true)
+      })
+    }
+  }, [isAuthenticated, handleActivity])
+
+  // Timer countdown and auto-logout
+  useEffect(() => {
+    if (!isAuthenticated) return
+
+    const interval = setInterval(() => {
+      const now = Date.now()
+      const timeSinceLastActivity = now - lastActivity
+      const thirtyMinutes = 30 * 60 * 1000 // 30 minutes in milliseconds
+      
+      if (timeSinceLastActivity >= thirtyMinutes) {
+        handleLogout()
+        return
+      }
+      
+      const remaining = Math.max(0, Math.floor((thirtyMinutes - timeSinceLastActivity) / 1000))
+      setTimeRemaining(remaining)
+      
+      // Update localStorage with current activity time
+      localStorage.setItem('ezzy-last-activity', lastActivity.toString())
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [isAuthenticated, lastActivity, handleLogout])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -28,14 +98,18 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
     setError('')
 
     // Simple password check - you can change this password
-    const correctPassword = 'ezzy#123' // Change this to your desired password
+    const correctPassword = 'ezzy123#' // Change this to your desired password
 
     // Simulate a small delay for better UX
     await new Promise(resolve => setTimeout(resolve, 500))
 
     if (password === correctPassword) {
       setIsAuthenticated(true)
+      const now = Date.now()
+      setLastActivity(now)
+      setTimeRemaining(30 * 60)
       localStorage.setItem('ezzy-authenticated', 'true')
+      localStorage.setItem('ezzy-last-activity', now.toString())
     } else {
       setError('Incorrect password. Please try again.')
       setPassword('')
@@ -43,17 +117,24 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
     setIsLoading(false)
   }
 
-  const handleLogout = () => {
-    setIsAuthenticated(false)
-    localStorage.removeItem('ezzy-authenticated')
-    setPassword('')
+  // Format time remaining for display
+  const formatTimeRemaining = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60)
+    const remainingSeconds = seconds % 60
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
   }
 
   if (isAuthenticated) {
     return (
       <div>
-        {/* Logout button */}
-        <div className="fixed top-4 right-4 z-50">
+        {/* Logout button and timer */}
+        <div className="fixed top-4 right-4 z-50 flex items-center space-x-3">
+          <div className="bg-slate-800/80 backdrop-blur-sm border border-slate-600/50 rounded-lg px-3 py-2 text-xs text-slate-300">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <span>Auto-logout: {formatTimeRemaining(timeRemaining)}</span>
+            </div>
+          </div>
           <button
             onClick={handleLogout}
             className="bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 hover:text-white px-4 py-2 rounded-lg backdrop-blur-sm border border-slate-600/50 transition-all duration-300 text-sm font-medium shadow-lg"

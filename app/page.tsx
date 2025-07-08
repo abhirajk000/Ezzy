@@ -261,7 +261,7 @@ export default function Home() {
                           </div>
                           <div className="flex items-center space-x-1">
                             <Clock className="w-3 h-3" />
-                            <span>{getTimeAgo(paste.created_at)}</span>
+                            <span suppressHydrationWarning>{mounted ? getTimeAgo(paste.created_at) : 'Loading...'}</span>
                           </div>
                         </div>
                         <button

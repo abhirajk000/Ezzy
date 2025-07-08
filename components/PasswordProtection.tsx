@@ -85,28 +85,29 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
     return () => clearInterval(interval)
   }, [isAuthenticated, lastActivity, handleLogout])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError('')
+  const handleKeyPress = async (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      setError('')
+      setIsLoading(true)
 
-    // Simple password check - you can change this password
-    const correctPassword = 'ezzy123#' // Change this to your desired password
+      // Simulate a brief loading delay for better UX
+      await new Promise(resolve => setTimeout(resolve, 500))
 
-    // Simulate a small delay for better UX
-    await new Promise(resolve => setTimeout(resolve, 500))
+      const correctPassword = 'admin123' // Change this to your desired password
 
-    if (password === correctPassword) {
-      setIsAuthenticated(true)
-      const now = Date.now()
-       setLastActivity(now)
-       localStorage.setItem('ezzy-authenticated', 'true')
-      localStorage.setItem('ezzy-last-activity', now.toString())
-    } else {
-      setError('Incorrect password. Please try again.')
-      setPassword('')
+      if (password === correctPassword) {
+        setIsAuthenticated(true)
+        const now = Date.now()
+        setLastActivity(now)
+        localStorage.setItem('ezzy-authenticated', 'true')
+        localStorage.setItem('ezzy-last-activity', now.toString())
+      } else {
+        setError('Incorrect password. Please try again.')
+        setPassword('') // Clear the password field immediately
+      }
+
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }
 
 
@@ -148,13 +149,14 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
           </div>
 
           {/* Password Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-6">
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter password"
+                onKeyPress={handleKeyPress}
+                placeholder="Enter password and press Enter"
                 className="w-full p-4 bg-slate-900/60 border border-slate-600/50 rounded-xl text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 transition-all duration-300 pr-12"
                 disabled={isLoading}
                 autoFocus
@@ -175,24 +177,13 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
               </div>
             )}
 
-            <button
-              type="submit"
-              disabled={!password.trim() || isLoading}
-              className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 disabled:from-slate-600 disabled:to-slate-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 disabled:cursor-not-allowed shadow-lg hover:shadow-indigo-500/25 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center space-x-2"
-            >
-              {isLoading ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  <span>Verifying...</span>
-                </>
-              ) : (
-                <>
-                  <Lock className="w-4 h-4" />
-                  <span>Access Ezzy</span>
-                </>
-              )}
-            </button>
-          </form>
+            {isLoading && (
+              <div className="flex items-center justify-center space-x-2 text-slate-300">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-slate-300"></div>
+                <span>Verifying...</span>
+              </div>
+            )}
+          </div>
 
           {/* Hint */}
           <div className="mt-6 text-center">

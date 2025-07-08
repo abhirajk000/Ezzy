@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { pasteOperations, PasteItem } from '../lib/supabase'
 import { Copy, Plus, Trash2, FileText, Clock, Hash } from 'lucide-react'
-import PasswordProtection from '../components/PasswordProtection'
+import PasswordProtection from '../components/ezzy'
 
 export default function Home() {
   const [pastes, setPastes] = useState<PasteItem[]>([])

@@ -86,9 +86,7 @@ export default function Home() {
     }
   }
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString()
-  }
+
 
   const getTimeAgo = (dateString: string) => {
     const now = new Date()
@@ -227,7 +225,7 @@ export default function Home() {
             </div>
           ) : (
             <div className="space-y-3">
-              {pastes.map((paste, index) => {
+              {pastes.map((paste) => {
                 const isExpanded = expandedItems.has(paste.id)
                 const toggleExpanded = () => {
                   const newExpanded = new Set(expandedItems)

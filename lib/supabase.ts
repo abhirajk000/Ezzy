@@ -51,7 +51,7 @@ export const pasteOperations = {
       throw new Error('Supabase not configured. Please set up your environment variables. See SETUP_GUIDE.md for instructions.')
     }
     
-    const insertData: any = { content, views: 0 }
+    const insertData: Partial<PasteItem> = { content, views: 0 }
     if (title && title.trim()) {
       insertData.title = title.trim()
     }
@@ -91,7 +91,7 @@ export const pasteOperations = {
   },
 
   // Subscribe to real-time changes
-  subscribeToChanges(callback: (payload: any) => void) {
+  subscribeToChanges(callback: (payload: unknown) => void) {
     return supabase
       .channel('pastes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'pastes' }, callback)

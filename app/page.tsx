@@ -126,12 +126,7 @@ export default function Home() {
             <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg">
               <FileText className="w-5 h-5 text-white" />
             </div>
-            <div className="p-2 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl shadow-lg">
-              <Activity className="w-5 h-5 text-white" />
-            </div>
-            <div className="p-2 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl shadow-lg">
-              <Globe className="w-5 h-5 text-white" />
-            </div>
+          
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-3 font-orbitron">
             Ezzy

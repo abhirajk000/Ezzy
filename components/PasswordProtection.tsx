@@ -127,14 +127,8 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
   if (isAuthenticated) {
     return (
       <div>
-        {/* Logout button and timer */}
-        <div className="fixed top-4 right-4 z-50 flex items-center space-x-3">
-          <div className="bg-slate-800/80 backdrop-blur-sm border border-slate-600/50 rounded-lg px-3 py-2 text-xs text-slate-300">
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span>Auto-logout: {formatTimeRemaining(timeRemaining)}</span>
-            </div>
-          </div>
+        {/* Logout button */}
+        <div className="fixed top-4 right-4 z-50">
           <button
             onClick={handleLogout}
             className="bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 hover:text-white px-4 py-2 rounded-lg backdrop-blur-sm border border-slate-600/50 transition-all duration-300 text-sm font-medium shadow-lg"

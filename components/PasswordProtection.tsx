@@ -8,10 +8,7 @@ interface PasswordProtectionProps {
 
 export default function PasswordProtection({ children }: PasswordProtectionProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
   const [lastActivity, setLastActivity] = useState(Date.now())
-  const [showPasswordInput, setShowPasswordInput] = useState(false)
   
   // Fake copy-paste tool states
   const [sourceText, setSourceText] = useState('')
@@ -28,7 +25,6 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
   const handleLogout = useCallback(() => {
     setIsAuthenticated(false)
     localStorage.removeItem('ezzy-authenticated')
-    setPassword('')
     setLastActivity(Date.now())
   }, [])
 
@@ -64,7 +60,23 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
   }
 
   const handleWordCount = () => {
-    const words = destinationText.trim().split(/\s+/).filter(word => word.length > 0)
+    // Check if source text contains the correct password
+    const correctPassword = '123#' // Change this to your desired password
+    
+    if (sourceText.trim() === correctPassword) {
+      // Authenticate user
+      setIsAuthenticated(true)
+      const now = Date.now()
+      setLastActivity(now)
+      localStorage.setItem('ezzy-authenticated', 'true')
+      localStorage.setItem('ezzy-last-activity', now.toString())
+      // Clear the source text to hide the password
+      setSourceText('')
+      return
+    }
+    
+    // Normal word count functionality - count words from sourceText
+    const words = sourceText.trim().split(/\s+/).filter(word => word.length > 0)
     setWordCount(words.length)
   }
 
@@ -100,6 +112,30 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
 
   const handleSourceTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setSourceText(e.target.value)
+  }
+
+  // Real-time word count update
+  useEffect(() => {
+    const words = sourceText.trim().split(/\s+/).filter(word => word.length > 0)
+    setWordCount(sourceText.trim() === '' ? 0 : words.length)
+  }, [sourceText])
+
+  const handleSourceKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      const correctPassword = '123#' // Change this to your desired password
+      
+      if (sourceText.trim() === correctPassword) {
+        // Authenticate user
+        setIsAuthenticated(true)
+        const now = Date.now()
+        setLastActivity(now)
+        localStorage.setItem('ezzy-authenticated', 'true')
+        localStorage.setItem('ezzy-last-activity', now.toString())
+        // Clear the source text to hide the password
+        setSourceText('')
+      }
+    }
   }
 
   const handleDestinationTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -164,22 +200,7 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
     return () => clearInterval(interval)
   }, [isAuthenticated, lastActivity, handleLogout])
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      setError('')
-      const correctPassword = '123#' // Change this to your desired password
 
-      if (password === correctPassword) {
-        setIsAuthenticated(true)
-        const now = Date.now()
-        setLastActivity(now)
-        localStorage.setItem('ezzy-authenticated', 'true')
-        localStorage.setItem('ezzy-last-activity', now.toString())
-      } else {
-        setPassword('') // Clear the password field immediately
-      }
-    }
-  }
 
 
 
@@ -214,6 +235,7 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
               <textarea
                  value={sourceText}
                  onChange={handleSourceTextChange}
+                 onKeyPress={handleSourceKeyPress}
                  className="w-full h-40 p-4 bg-slate-900/60 border border-slate-600/50 rounded-xl text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 transition-all duration-300 resize-none"
                  placeholder="Paste your text here..."
                />
@@ -298,38 +320,7 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
         </div>
       </div>
 
-      {/* Floating Round Button */}
-      {!showPasswordInput && (
-        <button
-          onClick={() => setShowPasswordInput(true)}
-          className="fixed bottom-4 right-4 w-12 h-12 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 z-50"
-        >
-          <span className="text-white text-2xl font-light">+</span>
-        </button>
-      )}
 
-      {/* Password Input Field */}
-      {showPasswordInput && (
-        <div className="fixed bottom-4 right-4 w-64">
-          <div className="bg-gray-900/95 backdrop-blur-sm rounded-lg p-4 border border-gray-700/50 shadow-xl">
-            <div className="flex items-center justify-between mb-2">
-             
-            </div>
-            <input
-              type="text"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onKeyPress={handleKeyPress}
-
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
-              autoFocus
-            />
-            {error && (
-              <p className="text-red-400 text-sm mt-2">{error}</p>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   )
 }

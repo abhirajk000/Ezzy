@@ -133,7 +133,7 @@ export default function Home() {
               <Globe className="w-5 h-5 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-3">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-3 font-orbitron">
             Ezzy
           </h1>
           <p className="text-lg text-slate-300 max-w-xl mx-auto leading-relaxed">
@@ -147,7 +147,7 @@ export default function Home() {
             <div className="p-2 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg shadow-lg">
               <Plus className="w-4 h-4 text-white" />
             </div>
-            <h2 className="text-xl font-bold text-white">Create</h2>
+            <h2 className="text-xl font-bold text-white font-orbitron">Create</h2>
           </div>
           <div className="space-y-4">
 
@@ -204,7 +204,7 @@ export default function Home() {
                 <FileText className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-white">
+                <h2 className="text-xl font-bold text-white font-orbitron">
                   Lists
                 </h2>
                 <p className="text-slate-400 text-sm">
@@ -279,7 +279,11 @@ export default function Home() {
                     
                     {!isExpanded && (
                       <div className="mb-3">
-                        <div className="bg-slate-900/50 border border-slate-600/30 rounded-md p-3">
+                        <div 
+                          className="bg-slate-900/50 border border-slate-600/30 rounded-md p-3 cursor-pointer hover:bg-slate-900/70 transition-all duration-200"
+                          onDoubleClick={toggleExpanded}
+                          title="Double-click to expand"
+                        >
                           <pre className="text-xs text-slate-200 whitespace-pre-wrap break-words leading-relaxed line-clamp-2">
                             {paste.content}
                           </pre>
@@ -291,7 +295,11 @@ export default function Home() {
                     )}
                     
                     {isExpanded && (
-                      <div className="bg-slate-900/60 rounded-lg p-3 mb-4 border border-slate-700/30">
+                      <div 
+                        className="bg-slate-900/60 rounded-lg p-3 mb-4 border border-slate-700/30 cursor-pointer hover:bg-slate-900/80 transition-all duration-200"
+                        onDoubleClick={toggleExpanded}
+                        title="Double-click to collapse"
+                      >
                         <pre className="whitespace-pre-wrap text-xs text-slate-200 font-mono leading-relaxed text-left break-words">
                           {paste.content}
                         </pre>

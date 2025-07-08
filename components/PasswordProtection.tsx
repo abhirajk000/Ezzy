@@ -28,7 +28,7 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
     setError('')
 
     // Simple password check - you can change this password
-    const correctPassword = 'ezzy123' // Change this to your desired password
+    const correctPassword = 'ezzy#123' // Change this to your desired password
 
     // Simulate a small delay for better UX
     await new Promise(resolve => setTimeout(resolve, 500))
@@ -77,7 +77,7 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
                 <Lock className="w-6 h-6 text-white" />
               </div>
             </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2 font-orbitron">
               Access Required
             </h1>
             <p className="text-slate-300 text-sm">
@@ -134,9 +134,7 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
 
           {/* Hint */}
           <div className="mt-6 text-center">
-            <p className="text-slate-400 text-xs">
-              Hint: Default password is "ezzy123"
-            </p>
+           
           </div>
         </div>
       </div>

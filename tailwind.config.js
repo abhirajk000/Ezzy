@@ -12,6 +12,9 @@ module.exports = {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
       },
+      fontFamily: {
+        orbitron: ['var(--font-orbitron)', 'monospace'],
+      },
     },
   },
   plugins: [],

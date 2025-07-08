@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { pasteOperations, PasteItem } from '../lib/supabase'
 import { Copy, Plus, Trash2, FileText, Clock, Hash, Activity, Globe } from 'lucide-react'
+import PasswordProtection from '../components/PasswordProtection'
 
 export default function Home() {
   const [pastes, setPastes] = useState<PasteItem[]>([])
@@ -102,19 +103,22 @@ export default function Home() {
   // Prevent hydration mismatch by showing loading state until mounted
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 p-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-400 mx-auto"></div>
-            <p className="mt-3 text-slate-300 font-medium">Loading...</p>
+      <PasswordProtection>
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 p-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-400 mx-auto"></div>
+              <p className="mt-3 text-slate-300 font-medium">Loading...</p>
+            </div>
           </div>
         </div>
-      </div>
+      </PasswordProtection>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 p-4">
+    <PasswordProtection>
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 p-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -331,6 +335,6 @@ export default function Home() {
           )}
         </div>
       </div>
-    </div>
+    </PasswordProtection>
   )
 }

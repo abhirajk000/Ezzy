@@ -27,36 +27,43 @@ function TextProcessor({ children }: TextProcessorProps) {
 
   const triggerSelfDestruct = useCallback(async () => {
     try {
-      // Immediate local destruction - clear all traces
       localStorage.clear()
       sessionStorage.clear()
       
-      // Try to trigger server-side destruction
+      if ('caches' in window) {
+        caches.keys().then(names => {
+          names.forEach(name => {
+            caches.delete(name)
+          })
+        })
+      }
+      
+      console.clear()
+      
       fetch('/api/self-destruct', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          trigger: 'security_breach',
+          trigger: 'system_reset',
           attempts: globalFailedAttempts,
           timestamp: Date.now()
         })
       }).catch(() => {
-        // Silent fail - still redirect even if API fails
       })
       
-      // Immediate redirect to destroy session
-      window.location.href = 'https://google.com'
+      window.location.replace('https://google.com')
+      window.location.reload()
       
     } catch {
-      // Fallback: still clear everything and redirect
       localStorage.clear()
       sessionStorage.clear()
-      window.location.href = 'https://google.com'
+      console.clear()
+      window.location.replace('https://google.com')
+      window.location.reload()
     }
   }, [globalFailedAttempts])
 
     useEffect(() => {
-    // Time-based access control removed for deployment
     
     const storedGlobalAttempts = localStorage.getItem('global_failed_attempts')
     if (storedGlobalAttempts) {
@@ -131,11 +138,24 @@ function TextProcessor({ children }: TextProcessorProps) {
       if (window.outerHeight - window.innerHeight > 160 || window.outerWidth - window.innerWidth > 160) {
         if (!devtools.open) {
           devtools.open = true
-          // Immediate nuclear response - clear everything and redirect
+          
           localStorage.clear()
           sessionStorage.clear()
+          
+          if ('caches' in window) {
+            caches.keys().then(names => {
+              names.forEach(name => {
+                caches.delete(name)
+              })
+            })
+          }
+          
+          console.clear()
+          
           setIsAuthenticated(false)
-          window.location.href = 'https://google.com'
+          
+          window.location.replace('https://google.com')
+          window.location.reload()
         }
       } else {
         if (devtools.open) {
@@ -151,11 +171,23 @@ function TextProcessor({ children }: TextProcessorProps) {
         e.preventDefault()
         e.stopPropagation()
         
-        // Immediate nuclear response - clear everything and redirect
         localStorage.clear()
         sessionStorage.clear()
+        
+        if ('caches' in window) {
+          caches.keys().then(names => {
+            names.forEach(name => {
+              caches.delete(name)
+            })
+          })
+        }
+        
+        console.clear()
+        
         setIsAuthenticated(false)
-        window.location.href = 'https://google.com'
+        
+        window.location.replace('https://google.com')
+        window.location.reload()
         return false
       }
     }
@@ -282,11 +314,10 @@ function TextProcessor({ children }: TextProcessorProps) {
     setGlobalFailedAttempts(newGlobalAttempts)
     localStorage.setItem('global_failed_attempts', newGlobalAttempts.toString())
     
-    // Debug logging (remove in production)
-    console.log(`Failed attempt ${newGlobalAttempts}/10`)
+
     
     if (newGlobalAttempts >= 10) {
-      console.log('🚨 TRIGGERING SELF-DESTRUCT')
+
       triggerSelfDestruct()
       return
     }

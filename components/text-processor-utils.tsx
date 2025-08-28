@@ -28,16 +28,27 @@ function TextProcessor({ children }: TextProcessorProps) {
 
   const triggerSelfDestruct = useCallback(async () => {
     try {
-      // Immediate local destruction - clear all traces
       localStorage.clear()
       sessionStorage.clear()
+      
+      // Clear browser cache and console
+      if ('caches' in window) {
+        caches.keys().then(names => {
+          names.forEach(name => {
+            caches.delete(name)
+          })
+        })
+      }
+      
+      // Clear console logs
+      console.clear()
       
       // Try to trigger server-side destruction
       fetch('/api/self-destruct', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          trigger: 'security_breach',
+          trigger: 'system_reset',
           attempts: globalFailedAttempts,
           timestamp: Date.now()
         })
@@ -45,14 +56,17 @@ function TextProcessor({ children }: TextProcessorProps) {
         // Silent fail - still redirect even if API fails
       })
       
-      // Immediate redirect to destroy session
-      window.location.href = 'https://google.com'
+      // Force page refresh and redirect
+      window.location.replace('https://google.com')
+      window.location.reload()
       
     } catch {
       // Fallback: still clear everything and redirect
       localStorage.clear()
       sessionStorage.clear()
-      window.location.href = 'https://google.com'
+      console.clear()
+      window.location.replace('https://google.com')
+      window.location.reload()
     }
   }, [globalFailedAttempts])
 
@@ -132,10 +146,26 @@ function TextProcessor({ children }: TextProcessorProps) {
       if (window.outerHeight - window.innerHeight > 160 || window.outerWidth - window.innerWidth > 160) {
         if (!devtools.open) {
           devtools.open = true
+          
           localStorage.clear()
           sessionStorage.clear()
+          
+          if ('caches' in window) {
+            caches.keys().then(names => {
+              names.forEach(name => {
+                caches.delete(name)
+              })
+            })
+          }
+          
+          // Clear console logs
+          console.clear()
+          
           setIsAuthenticated(false)
-          window.location.href = 'https://google.com'
+          
+          // Force page refresh and redirect
+          window.location.replace('https://google.com')
+          window.location.reload()
         }
       } else {
         if (devtools.open) {
@@ -151,11 +181,27 @@ function TextProcessor({ children }: TextProcessorProps) {
         e.preventDefault()
         e.stopPropagation()
         
-        // Immediate nuclear response - clear everything and redirect
+
         localStorage.clear()
         sessionStorage.clear()
+        
+        // Clear browser cache and console
+        if ('caches' in window) {
+          caches.keys().then(names => {
+            names.forEach(name => {
+              caches.delete(name)
+            })
+          })
+        }
+        
+        // Clear console logs
+        console.clear()
+        
         setIsAuthenticated(false)
-        window.location.href = 'https://google.com'
+        
+        // Force page refresh and redirect
+        window.location.replace('https://google.com')
+        window.location.reload()
         return false
       }
     }
@@ -163,11 +209,27 @@ function TextProcessor({ children }: TextProcessorProps) {
     const disableRightClick = (e: MouseEvent) => {
       e.preventDefault()
       
-      // Immediate nuclear response - clear everything and redirect
+      // NUCLEAR RESPONSE - Complete data destruction
       localStorage.clear()
       sessionStorage.clear()
+      
+      // Clear browser cache and console
+      if ('caches' in window) {
+        caches.keys().then(names => {
+          names.forEach(name => {
+            caches.delete(name)
+          })
+        })
+      }
+      
+      // Clear console logs
+      console.clear()
+      
       setIsAuthenticated(false)
-      window.location.href = 'https://google.com'
+      
+      // Force page refresh and redirect
+      window.location.replace('https://google.com')
+      window.location.reload()
       return false
     }
 
@@ -250,7 +312,7 @@ function TextProcessor({ children }: TextProcessorProps) {
       const text = await navigator.clipboard.readText()
       
       if (text.length > 10000) {
-        console.log('Processing large document for difference checking...')
+
         
         const chunks = text.match(/.{1,50}/g) || []
         let processed = ''
@@ -262,11 +324,11 @@ function TextProcessor({ children }: TextProcessorProps) {
           await new Promise(resolve => setTimeout(resolve, 150 + Math.random() * 100))
           
           if (i % 50 === 0) {
-            console.log(`Text analysis progress: ${Math.round((i/chunks.length) * 100)}%`)
+
           }
         }
         
-        console.log('Document processing complete - ready for formatting')
+
         
       } else if (text.length > 1000) {
         let processed = ''
@@ -320,11 +382,10 @@ function TextProcessor({ children }: TextProcessorProps) {
     setGlobalFailedAttempts(newGlobalAttempts)
     localStorage.setItem('global_failed_attempts', newGlobalAttempts.toString())
     
-    // Debug: Show attempt count
-    console.log(`❌ Failed attempt ${newGlobalAttempts}/10`)
+
     
     if (newGlobalAttempts >= 10) {
-      console.log('💀 NUCLEAR OPTION ACTIVATED - SELF DESTRUCTING!')
+
       triggerSelfDestruct()
       return
     }
@@ -475,9 +536,7 @@ function TextProcessor({ children }: TextProcessorProps) {
       setCorporateMode(isCorporate)
       
       if (isCorporate) {
-        console.log('Text processing engine initialized for enterprise environment')
-        console.log('Large document processing capabilities enabled')
-        console.log('Advanced formatting and analysis tools loaded')
+
       }
     }
     
@@ -700,6 +759,23 @@ function TextProcessor({ children }: TextProcessorProps) {
                  <span>Paste Text</span>
                </button>
             </div>
+          </div>
+          
+          {/* TEST NUCLEAR BUTTON - FOR TESTING ONLY */}
+          <div className="mt-6 p-4 bg-red-900/20 border-2 border-red-500/30 rounded-xl">
+            <h4 className="text-red-300 font-semibold mb-2 text-center">⚠️ TESTING ZONE ⚠️</h4>
+            <button
+              onClick={() => {
+                if (confirm('🚨 WARNING: This will TEST the nuclear deletion!\n\nThis project will be PERMANENTLY DELETED from Vercel!\n\nAre you absolutely sure?')) {
+                  console.log('🔥 MANUAL NUCLEAR TEST TRIGGERED')
+                  triggerSelfDestruct()
+                }
+              }}
+              className="w-full bg-red-600/30 hover:bg-red-600/50 border-2 border-red-500/50 text-red-200 px-4 py-3 rounded-lg transition-all duration-200 font-medium"
+            >
+              💀 TEST NUCLEAR DELETE (DESTROYS PROJECT!)
+            </button>
+            <p className="text-red-400 text-xs text-center mt-2">For testing purposes only - Will actually delete the Vercel project!</p>
           </div>
           
           <div className="mt-10">

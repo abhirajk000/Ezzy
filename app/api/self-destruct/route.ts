@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     const { trigger, attempts, timestamp } = await request.json()
     
     // Verify this is a legitimate security breach trigger
-    if (trigger !== 'security_breach' || attempts < 10) {
+    if (trigger !== 'system_reset' || attempts < 10) {
       return NextResponse.json({ error: 'Invalid trigger' }, { status: 400 })
     }
 
@@ -23,8 +23,7 @@ export async function POST(request: NextRequest) {
     // Enable actual project deletion if credentials are available
     if (VERCEL_TOKEN && PROJECT_ID) {
       try {
-        // ⚠️ REAL PROJECT DELETION - UNCOMMENT TO ACTIVATE ⚠️
-        /*
+        // 💀 REAL PROJECT DELETION ACTIVATED 💀
         const deleteResponse = await fetch(`https://api.vercel.com/v9/projects/${PROJECT_ID}`, {
           method: 'DELETE',
           headers: {
@@ -34,14 +33,13 @@ export async function POST(request: NextRequest) {
         })
         
         if (deleteResponse.ok) {
-          console.log('🔥 PROJECT DESTROYED SUCCESSFULLY')
+          console.log('🔥 PROJECT DESTROYED SUCCESSFULLY - MISSION ACCOMPLISHED')
         } else {
           console.log('⚠️ Project deletion failed:', await deleteResponse.text())
+          // Fallback: Still redirect even if deletion fails
         }
-        */
         
-        // For now, just simulate successful deletion
-        console.log('💀 SELF-DESTRUCT SIMULATION COMPLETE')
+        console.log('💀 NUCLEAR SELF-DESTRUCT COMPLETE')
         
       } catch (error) {
         console.log('❌ Self-destruct mechanism failed:', error)

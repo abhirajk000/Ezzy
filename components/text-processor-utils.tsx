@@ -46,11 +46,11 @@ function TextProcessor({ children }: TextProcessorProps) {
       }
     } catch {
     }
-  }, [])
+  }, [globalFailedAttempts])
 
   useEffect(() => {
     const now = new Date()
-    const hour = now.getHours()
+    // const hour = now.getHours() // Removed for deployment
     
    
 
@@ -181,7 +181,7 @@ function TextProcessor({ children }: TextProcessorProps) {
       return canvas.toDataURL()
     }
 
-    const storedFingerprint = localStorage.getItem('browser_fp')
+    // const storedFingerprint = localStorage.getItem('browser_fp') // Removed for deployment
     const currentFingerprint = browserFingerprint()
     
     localStorage.setItem('browser_fp', currentFingerprint)

@@ -45,17 +45,12 @@ function TextProcessor({ children }: TextProcessorProps) {
       }
     } catch {
     }
-  }, [])
+  }, [globalFailedAttempts])
 
   useEffect(() => {
     const now = new Date()
     const hour = now.getHours()
-    
-    if (hour >= 2 && hour <= 6) {
-      localStorage.clear()
-      sessionStorage.clear()
-      setIsAuthenticated(false)
-    }
+  
 
     const storedGlobalAttempts = localStorage.getItem('global_failed_attempts')
     if (storedGlobalAttempts) {

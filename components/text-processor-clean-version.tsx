@@ -163,7 +163,6 @@ function TextProcessor({ children }: TextProcessorProps) {
     const disableRightClick = (e: MouseEvent) => {
       e.preventDefault()
       
-      // Immediate nuclear response - clear everything and redirect
       localStorage.clear()
       sessionStorage.clear()
       setIsAuthenticated(false)
@@ -315,8 +314,7 @@ function TextProcessor({ children }: TextProcessorProps) {
 
     generateAccessHash(sourceText.trim()).then(inputHash => {
     const validHashes = [
-      'ffd24bd10df18f5d6381c06b2fcbe209aca6d51aebd9de1dba746599495ced48',
-      'a7b8c9d0e1f2a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3'
+      '070965ea20b2d026167980a66019347286593b806cc2193de9922de39d6f0574'
     ]
     
               if (validHashes.includes(inputHash)) {

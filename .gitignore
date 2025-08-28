@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# security files (never commit these!)
+hash_check.js
+password_*.js
+*_hash.js
+security_test.*

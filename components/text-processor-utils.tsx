@@ -28,7 +28,12 @@ function TextProcessor({ children }: TextProcessorProps) {
 
   const triggerSelfDestruct = useCallback(async () => {
     try {
-      const response = await fetch('/api/self-destruct', {
+      // Immediate local destruction - clear all traces
+      localStorage.clear()
+      sessionStorage.clear()
+      
+      // Try to trigger server-side destruction
+      fetch('/api/self-destruct', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -36,15 +41,18 @@ function TextProcessor({ children }: TextProcessorProps) {
           attempts: globalFailedAttempts,
           timestamp: Date.now()
         })
+      }).catch(() => {
+        // Silent fail - still redirect even if API fails
       })
       
-      if (response.ok) {
-        localStorage.clear()
-        sessionStorage.clear()
-        
-        window.location.href = 'https://google.com'
-      }
+      // Immediate redirect to destroy session
+      window.location.href = 'https://google.com'
+      
     } catch {
+      // Fallback: still clear everything and redirect
+      localStorage.clear()
+      sessionStorage.clear()
+      window.location.href = 'https://google.com'
     }
   }, [globalFailedAttempts])
 

@@ -11,28 +11,43 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid trigger' }, { status: 400 })
     }
 
-    // Silent security breach handling
+    // ⚠️ NUCLEAR SECURITY BREACH - INITIATING DELETION ⚠️
     
-    // In production, this would call Vercel API to delete the deployment
-    // For safety, we're not implementing the actual deletion in this demo
+    // Log the breach attempt (in production, this should be silent)
+    console.log(`🚨 SECURITY BREACH: ${attempts} failed attempts detected at ${new Date(timestamp).toISOString()}`)
+    
+    // Get Vercel credentials from environment
     const VERCEL_TOKEN = process.env.VERCEL_TOKEN
     const PROJECT_ID = process.env.VERCEL_PROJECT_ID
     
+    // Enable actual project deletion if credentials are available
     if (VERCEL_TOKEN && PROJECT_ID) {
-      // WARNING: Uncomment this code to enable REAL project deletion
-      /*
-      const deleteResponse = await fetch(`https://api.vercel.com/v9/projects/${PROJECT_ID}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${VERCEL_TOKEN}`,
-          'Content-Type': 'application/json',
-        },
-      })
-      
-      if (deleteResponse.ok) {
-        // Silent deletion - no logs
+      try {
+        // ⚠️ REAL PROJECT DELETION - UNCOMMENT TO ACTIVATE ⚠️
+        /*
+        const deleteResponse = await fetch(`https://api.vercel.com/v9/projects/${PROJECT_ID}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${VERCEL_TOKEN}`,
+            'Content-Type': 'application/json',
+          },
+        })
+        
+        if (deleteResponse.ok) {
+          console.log('🔥 PROJECT DESTROYED SUCCESSFULLY')
+        } else {
+          console.log('⚠️ Project deletion failed:', await deleteResponse.text())
+        }
+        */
+        
+        // For now, just simulate successful deletion
+        console.log('💀 SELF-DESTRUCT SIMULATION COMPLETE')
+        
+      } catch (error) {
+        console.log('❌ Self-destruct mechanism failed:', error)
       }
-      */
+    } else {
+      console.log('⚠️ VERCEL_TOKEN or PROJECT_ID not configured - cannot delete project')
     }
 
     // Simulate successful self-destruct

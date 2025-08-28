@@ -6,8 +6,8 @@ const inter = Inter({ subsets: ['latin'] })
 const orbitron = Orbitron({ subsets: ['latin'], variable: '--font-orbitron' })
 
 export const metadata: Metadata = {
-  title: 'Text Tools Pro - Advanced Processing',
-    description: 'Professional text analysis and formatting utilities',
+    title: 'Text diff checker - Compare & Analyze',
+  description: 'Advanced text comparison and difference analysis tools',
 }
 
 export default function RootLayout({

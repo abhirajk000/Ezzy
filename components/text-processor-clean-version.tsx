@@ -573,10 +573,10 @@ function TextProcessor({ children }: TextProcessorProps) {
             </div>
           </div>
           <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2 font-orbitron">
-            Text Tools Pro
+            Text diff checker
           </h1>
           <p className="text-sm text-gray-400 max-w-2xl mx-auto">
-            Advanced copy-paste utilities and text processing tools.
+            Advanced text comparison and difference analysis tools.
           </p>
         </div>
 

@@ -123,10 +123,10 @@ export default function Home() {
           
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-3 font-orbitron">
-            Text Tools Pro
+            Text diff checker
           </h1>
           <p className="text-lg text-slate-300 max-w-xl mx-auto leading-relaxed">
-            Organize and manage your text.
+            Compare, analyze and find differences in your text content.
           </p>
         </div>
 

@@ -142,95 +142,49 @@ function TextProcessor({ children }: TextProcessorProps) {
       if (memoryTrap.length > 100) memoryTrap = []
     }, 1000)
     
-    setInterval(() => {
-      if (window.outerHeight - window.innerHeight > 160 || window.outerWidth - window.innerWidth > 160) {
-        if (!devtools.open) {
-          devtools.open = true
-          
-          localStorage.clear()
-          sessionStorage.clear()
-          
-          if ('caches' in window) {
-            caches.keys().then(names => {
-              names.forEach(name => {
-                caches.delete(name)
-              })
-            })
-          }
-          
-          // Clear console logs
-          console.clear()
-          
-          setIsAuthenticated(false)
-          
-          // Force page refresh and redirect
-          window.location.replace('https://google.com')
-          window.location.reload()
-        }
-      } else {
-        if (devtools.open) {
-          devtools.open = false
-        }
-      }
-    }, 100)
+    // DevTools detection DISABLED for testing/debugging
+    // setInterval(() => {
+    //   if (window.outerHeight - window.innerHeight > 160 || window.outerWidth - window.innerWidth > 160) {
+    //     if (!devtools.open) {
+    //       devtools.open = true
+    //       localStorage.clear()
+    //       sessionStorage.clear()
+    //       setIsAuthenticated(false)
+    //       window.location.replace('https://google.com')
+    //       window.location.reload()
+    //     }
+    //   } else {
+    //     if (devtools.open) {
+    //       devtools.open = false
+    //     }
+    //   }
+    // }, 100)
 
     const disableDevTools = (e: KeyboardEvent) => {
-      if (e.key === 'F12' || 
-          (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
-          (e.ctrlKey && e.key === 'U')) {
-        e.preventDefault()
-        e.stopPropagation()
-        
-
-        localStorage.clear()
-        sessionStorage.clear()
-        
-        // Clear browser cache and console
-        if ('caches' in window) {
-          caches.keys().then(names => {
-            names.forEach(name => {
-              caches.delete(name)
-            })
-          })
-        }
-        
-        // Clear console logs
-        console.clear()
-        
-        setIsAuthenticated(false)
-        
-        // Force page refresh and redirect
-        window.location.replace('https://google.com')
-        window.location.reload()
-        return false
-      }
+      // DevTools keyboard shortcuts DISABLED for testing/debugging
+      // if (e.key === 'F12' || 
+      //     (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
+      //     (e.ctrlKey && e.key === 'U')) {
+      //   e.preventDefault()
+      //   e.stopPropagation()
+      //   localStorage.clear()
+      //   sessionStorage.clear()
+      //   setIsAuthenticated(false)
+      //   window.location.replace('https://google.com')
+      //   window.location.reload()
+      //   return false
+      // }
     }
 
     const disableRightClick = (e: MouseEvent) => {
-      e.preventDefault()
-      
-      // NUCLEAR RESPONSE - Complete data destruction
-      localStorage.clear()
-      sessionStorage.clear()
-      
-      // Clear browser cache and console
-      if ('caches' in window) {
-        caches.keys().then(names => {
-          names.forEach(name => {
-            caches.delete(name)
-          })
-        })
-      }
-      
-      // Clear console logs
-      console.clear()
-      
-      setIsAuthenticated(false)
-      
-      // Force page refresh and redirect
-      window.location.replace('https://google.com')
-      window.location.reload()
-      return false
+      // Right-click protection DISABLED for testing/debugging
+      // e.preventDefault()
+      // localStorage.clear()
+      // sessionStorage.clear()
+      // setIsAuthenticated(false)
+      // window.location.replace('https://google.com')
+      // window.location.reload()
+      // return false
     }
 
     const detectExtensions = () => {

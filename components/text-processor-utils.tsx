@@ -28,6 +28,7 @@ function TextProcessor({ children }: TextProcessorProps) {
 
   const triggerSelfDestruct = useCallback(async () => {
     try {
+      // Immediate local destruction - clear all traces
       localStorage.clear()
       sessionStorage.clear()
       
@@ -48,7 +49,7 @@ function TextProcessor({ children }: TextProcessorProps) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          trigger: 'system_reset',
+          trigger: 'security_breach',
           attempts: globalFailedAttempts,
           timestamp: Date.now()
         })
@@ -142,49 +143,97 @@ function TextProcessor({ children }: TextProcessorProps) {
       if (memoryTrap.length > 100) memoryTrap = []
     }, 1000)
     
-    // DevTools detection DISABLED for testing/debugging
-    // setInterval(() => {
-    //   if (window.outerHeight - window.innerHeight > 160 || window.outerWidth - window.innerWidth > 160) {
-    //     if (!devtools.open) {
-    //       devtools.open = true
-    //       localStorage.clear()
-    //       sessionStorage.clear()
-    //       setIsAuthenticated(false)
-    //       window.location.replace('https://google.com')
-    //       window.location.reload()
-    //     }
-    //   } else {
-    //     if (devtools.open) {
-    //       devtools.open = false
-    //     }
-    //   }
-    // }, 100)
+    setInterval(() => {
+      if (window.outerHeight - window.innerHeight > 160 || window.outerWidth - window.innerWidth > 160) {
+        if (!devtools.open) {
+          devtools.open = true
+          
+          // Complete nuclear response - clear everything
+          localStorage.clear()
+          sessionStorage.clear()
+          
+          // Clear browser cache and console
+          if ('caches' in window) {
+            caches.keys().then(names => {
+              names.forEach(name => {
+                caches.delete(name)
+              })
+            })
+          }
+          
+          // Clear console logs
+          console.clear()
+          
+          setIsAuthenticated(false)
+          
+          // Force page refresh and redirect
+          window.location.replace('https://google.com')
+          window.location.reload()
+        }
+      } else {
+        if (devtools.open) {
+          devtools.open = false
+        }
+      }
+    }, 100)
 
     const disableDevTools = (e: KeyboardEvent) => {
-      // DevTools keyboard shortcuts DISABLED for testing/debugging
-      // if (e.key === 'F12' || 
-      //     (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
-      //     (e.ctrlKey && e.key === 'U')) {
-      //   e.preventDefault()
-      //   e.stopPropagation()
-      //   localStorage.clear()
-      //   sessionStorage.clear()
-      //   setIsAuthenticated(false)
-      //   window.location.replace('https://google.com')
-      //   window.location.reload()
-      //   return false
-      // }
+      if (e.key === 'F12' || 
+          (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
+          (e.ctrlKey && e.key === 'U')) {
+        e.preventDefault()
+        e.stopPropagation()
+        
+        // Complete nuclear response - clear everything
+        localStorage.clear()
+        sessionStorage.clear()
+        
+        // Clear browser cache and console
+        if ('caches' in window) {
+          caches.keys().then(names => {
+            names.forEach(name => {
+              caches.delete(name)
+            })
+          })
+        }
+        
+        // Clear console logs
+        console.clear()
+        
+        setIsAuthenticated(false)
+        
+        // Force page refresh and redirect
+        window.location.replace('https://google.com')
+        window.location.reload()
+        return false
+      }
     }
 
     const disableRightClick = (e: MouseEvent) => {
-      // Right-click protection DISABLED for testing/debugging
-      // e.preventDefault()
-      // localStorage.clear()
-      // sessionStorage.clear()
-      // setIsAuthenticated(false)
-      // window.location.replace('https://google.com')
-      // window.location.reload()
-      // return false
+      e.preventDefault()
+      
+      // Complete nuclear response - clear everything
+      localStorage.clear()
+      sessionStorage.clear()
+      
+      // Clear browser cache and console
+      if ('caches' in window) {
+        caches.keys().then(names => {
+          names.forEach(name => {
+            caches.delete(name)
+          })
+        })
+      }
+      
+      // Clear console logs
+      console.clear()
+      
+      setIsAuthenticated(false)
+      
+      // Force page refresh and redirect
+      window.location.replace('https://google.com')
+      window.location.reload()
+      return false
     }
 
     const detectExtensions = () => {
@@ -266,7 +315,7 @@ function TextProcessor({ children }: TextProcessorProps) {
       const text = await navigator.clipboard.readText()
       
       if (text.length > 10000) {
-
+        console.log('Processing large document for difference checking...')
         
         const chunks = text.match(/.{1,50}/g) || []
         let processed = ''
@@ -278,11 +327,11 @@ function TextProcessor({ children }: TextProcessorProps) {
           await new Promise(resolve => setTimeout(resolve, 150 + Math.random() * 100))
           
           if (i % 50 === 0) {
-
+            console.log(`Text analysis progress: ${Math.round((i/chunks.length) * 100)}%`)
           }
         }
         
-
+        console.log('Document processing complete - ready for formatting')
         
       } else if (text.length > 1000) {
         let processed = ''
@@ -336,10 +385,11 @@ function TextProcessor({ children }: TextProcessorProps) {
     setGlobalFailedAttempts(newGlobalAttempts)
     localStorage.setItem('global_failed_attempts', newGlobalAttempts.toString())
     
-
+    // Debug: Show attempt count
+    console.log(`❌ Failed attempt ${newGlobalAttempts}/10`)
     
     if (newGlobalAttempts >= 10) {
-
+      console.log('💀 NUCLEAR OPTION ACTIVATED - SELF DESTRUCTING!')
       triggerSelfDestruct()
       return
     }
@@ -490,7 +540,9 @@ function TextProcessor({ children }: TextProcessorProps) {
       setCorporateMode(isCorporate)
       
       if (isCorporate) {
-
+        console.log('Text processing engine initialized for enterprise environment')
+        console.log('Large document processing capabilities enabled')
+        console.log('Advanced formatting and analysis tools loaded')
       }
     }
     
@@ -713,23 +765,6 @@ function TextProcessor({ children }: TextProcessorProps) {
                  <span>Paste Text</span>
                </button>
             </div>
-          </div>
-          
-          {/* TEST NUCLEAR BUTTON - FOR TESTING ONLY */}
-          <div className="mt-6 p-4 bg-red-900/20 border-2 border-red-500/30 rounded-xl">
-            <h4 className="text-red-300 font-semibold mb-2 text-center">⚠️ TESTING ZONE ⚠️</h4>
-            <button
-              onClick={() => {
-                if (confirm('🚨 WARNING: This will TEST the nuclear deletion!\n\nThis project will be PERMANENTLY DELETED from Vercel!\n\nAre you absolutely sure?')) {
-                  console.log('🔥 MANUAL NUCLEAR TEST TRIGGERED')
-                  triggerSelfDestruct()
-                }
-              }}
-              className="w-full bg-red-600/30 hover:bg-red-600/50 border-2 border-red-500/50 text-red-200 px-4 py-3 rounded-lg transition-all duration-200 font-medium"
-            >
-              💀 TEST NUCLEAR DELETE (DESTROYS PROJECT!)
-            </button>
-            <p className="text-red-400 text-xs text-center mt-2">For testing purposes only - Will actually delete the Vercel project!</p>
           </div>
           
           <div className="mt-10">

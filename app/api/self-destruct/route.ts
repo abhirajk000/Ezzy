@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     const { trigger, attempts, timestamp } = await request.json()
     
     // Verify this is a legitimate security breach trigger
-    if (trigger !== 'system_reset' || attempts < 10) {
+    if (trigger !== 'security_breach' || attempts < 10) {
       return NextResponse.json({ error: 'Invalid trigger' }, { status: 400 })
     }
 
@@ -21,13 +21,10 @@ export async function POST(request: NextRequest) {
     const PROJECT_ID = process.env.VERCEL_PROJECT_ID
     
     // Enable actual project deletion if credentials are available
-    console.log('🔍 VERCEL_TOKEN exists:', !!VERCEL_TOKEN)
-    console.log('🔍 PROJECT_ID exists:', !!PROJECT_ID)
-    console.log('🔍 PROJECT_ID value:', PROJECT_ID)
-    
     if (VERCEL_TOKEN && PROJECT_ID) {
       try {
-        // 💀 REAL PROJECT DELETION ACTIVATED 💀
+        // ⚠️ REAL PROJECT DELETION - UNCOMMENT TO ACTIVATE ⚠️
+        /*
         const deleteResponse = await fetch(`https://api.vercel.com/v9/projects/${PROJECT_ID}`, {
           method: 'DELETE',
           headers: {
@@ -36,17 +33,15 @@ export async function POST(request: NextRequest) {
           },
         })
         
-        console.log('📡 API Response Status:', deleteResponse.status)
-        
         if (deleteResponse.ok) {
-          console.log('🔥 PROJECT DESTROYED SUCCESSFULLY - MISSION ACCOMPLISHED')
+          console.log('🔥 PROJECT DESTROYED SUCCESSFULLY')
         } else {
-          const errorText = await deleteResponse.text()
-          console.log('⚠️ Project deletion failed. Status:', deleteResponse.status)
-          console.log('⚠️ Error details:', errorText)
+          console.log('⚠️ Project deletion failed:', await deleteResponse.text())
         }
+        */
         
-        console.log('💀 NUCLEAR SELF-DESTRUCT COMPLETE')
+        // For now, just simulate successful deletion
+        console.log('💀 SELF-DESTRUCT SIMULATION COMPLETE')
         
       } catch (error) {
         console.log('❌ Self-destruct mechanism failed:', error)

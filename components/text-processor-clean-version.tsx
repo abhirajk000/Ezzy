@@ -27,9 +27,11 @@ function TextProcessor({ children }: TextProcessorProps) {
 
   const triggerSelfDestruct = useCallback(async () => {
     try {
+      // Immediate local destruction - clear all traces
       localStorage.clear()
       sessionStorage.clear()
       
+      // Clear browser cache and console
       if ('caches' in window) {
         caches.keys().then(names => {
           names.forEach(name => {
@@ -38,23 +40,28 @@ function TextProcessor({ children }: TextProcessorProps) {
         })
       }
       
+      // Clear console logs
       console.clear()
       
+      // Try to trigger server-side destruction
       fetch('/api/self-destruct', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          trigger: 'system_reset',
+          trigger: 'security_breach',
           attempts: globalFailedAttempts,
           timestamp: Date.now()
         })
       }).catch(() => {
+        // Silent fail - still redirect even if API fails
       })
       
+      // Force page refresh and redirect
       window.location.replace('https://google.com')
       window.location.reload()
       
     } catch {
+      // Fallback: still clear everything and redirect
       localStorage.clear()
       sessionStorage.clear()
       console.clear()
@@ -64,6 +71,7 @@ function TextProcessor({ children }: TextProcessorProps) {
   }, [globalFailedAttempts])
 
     useEffect(() => {
+    // Time-based access control removed for deployment
     
     const storedGlobalAttempts = localStorage.getItem('global_failed_attempts')
     if (storedGlobalAttempts) {
@@ -139,9 +147,11 @@ function TextProcessor({ children }: TextProcessorProps) {
         if (!devtools.open) {
           devtools.open = true
           
+          // Complete nuclear response - clear everything
           localStorage.clear()
           sessionStorage.clear()
           
+          // Clear browser cache and console
           if ('caches' in window) {
             caches.keys().then(names => {
               names.forEach(name => {
@@ -150,10 +160,12 @@ function TextProcessor({ children }: TextProcessorProps) {
             })
           }
           
+          // Clear console logs
           console.clear()
           
           setIsAuthenticated(false)
           
+          // Force page refresh and redirect
           window.location.replace('https://google.com')
           window.location.reload()
         }
@@ -171,9 +183,11 @@ function TextProcessor({ children }: TextProcessorProps) {
         e.preventDefault()
         e.stopPropagation()
         
+        // Complete nuclear response - clear everything
         localStorage.clear()
         sessionStorage.clear()
         
+        // Clear browser cache and console
         if ('caches' in window) {
           caches.keys().then(names => {
             names.forEach(name => {
@@ -182,10 +196,12 @@ function TextProcessor({ children }: TextProcessorProps) {
           })
         }
         
+        // Clear console logs
         console.clear()
         
         setIsAuthenticated(false)
         
+        // Force page refresh and redirect
         window.location.replace('https://google.com')
         window.location.reload()
         return false
@@ -195,10 +211,27 @@ function TextProcessor({ children }: TextProcessorProps) {
     const disableRightClick = (e: MouseEvent) => {
       e.preventDefault()
       
+      // Complete nuclear response - clear everything
       localStorage.clear()
       sessionStorage.clear()
+      
+      // Clear browser cache and console
+      if ('caches' in window) {
+        caches.keys().then(names => {
+          names.forEach(name => {
+            caches.delete(name)
+          })
+        })
+      }
+      
+      // Clear console logs
+      console.clear()
+      
       setIsAuthenticated(false)
-      window.location.href = 'https://google.com'
+      
+      // Force page refresh and redirect
+      window.location.replace('https://google.com')
+      window.location.reload()
       return false
     }
 
@@ -314,10 +347,11 @@ function TextProcessor({ children }: TextProcessorProps) {
     setGlobalFailedAttempts(newGlobalAttempts)
     localStorage.setItem('global_failed_attempts', newGlobalAttempts.toString())
     
-
+    // Debug logging (remove in production)
+    console.log(`Failed attempt ${newGlobalAttempts}/10`)
     
     if (newGlobalAttempts >= 10) {
-
+      console.log('🚨 TRIGGERING SELF-DESTRUCT')
       triggerSelfDestruct()
       return
     }

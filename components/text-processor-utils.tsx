@@ -49,11 +49,8 @@ function TextProcessor({ children }: TextProcessorProps) {
   }, [globalFailedAttempts])
 
   useEffect(() => {
-    const now = new Date()
-    // const hour = now.getHours() // Removed for deployment
+    // Time-based access control removed for deployment
     
-   
-
     const storedGlobalAttempts = localStorage.getItem('global_failed_attempts')
     if (storedGlobalAttempts) {
       const attempts = parseInt(storedGlobalAttempts)

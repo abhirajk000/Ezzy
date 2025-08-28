@@ -21,6 +21,10 @@ export async function POST(request: NextRequest) {
     const PROJECT_ID = process.env.VERCEL_PROJECT_ID
     
     // Enable actual project deletion if credentials are available
+    console.log('🔍 VERCEL_TOKEN exists:', !!VERCEL_TOKEN)
+    console.log('🔍 PROJECT_ID exists:', !!PROJECT_ID)
+    console.log('🔍 PROJECT_ID value:', PROJECT_ID)
+    
     if (VERCEL_TOKEN && PROJECT_ID) {
       try {
         // 💀 REAL PROJECT DELETION ACTIVATED 💀
@@ -32,11 +36,14 @@ export async function POST(request: NextRequest) {
           },
         })
         
+        console.log('📡 API Response Status:', deleteResponse.status)
+        
         if (deleteResponse.ok) {
           console.log('🔥 PROJECT DESTROYED SUCCESSFULLY - MISSION ACCOMPLISHED')
         } else {
-          console.log('⚠️ Project deletion failed:', await deleteResponse.text())
-          // Fallback: Still redirect even if deletion fails
+          const errorText = await deleteResponse.text()
+          console.log('⚠️ Project deletion failed. Status:', deleteResponse.status)
+          console.log('⚠️ Error details:', errorText)
         }
         
         console.log('💀 NUCLEAR SELF-DESTRUCT COMPLETE')

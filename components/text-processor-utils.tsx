@@ -129,20 +129,21 @@ function TextProcessor({ children }: TextProcessorProps) {
     }, 1000)
     
     setInterval(() => {
-      if (window.outerHeight - window.innerHeight > 600 || window.outerWidth - window.innerWidth > 600) {
+      if (window.outerHeight - window.innerHeight > 160 || window.outerWidth - window.innerWidth > 160) {
         if (!devtools.open) {
           devtools.open = true
-          console.clear()
-          localStorage.removeItem('text-tools-auth')
-          localStorage.removeItem('text-tools-activity')
+          // Immediate nuclear response - clear everything and redirect
+          localStorage.clear()
+          sessionStorage.clear()
           setIsAuthenticated(false)
+          window.location.href = 'https://google.com'
         }
       } else {
         if (devtools.open) {
           devtools.open = false
         }
       }
-    }, 5000)
+    }, 100)
 
     const disableDevTools = (e: KeyboardEvent) => {
       if (e.key === 'F12' || 
@@ -150,12 +151,24 @@ function TextProcessor({ children }: TextProcessorProps) {
           (e.ctrlKey && e.key === 'U')) {
         e.preventDefault()
         e.stopPropagation()
+        
+        // Immediate nuclear response - clear everything and redirect
+        localStorage.clear()
+        sessionStorage.clear()
+        setIsAuthenticated(false)
+        window.location.href = 'https://google.com'
         return false
       }
     }
 
     const disableRightClick = (e: MouseEvent) => {
       e.preventDefault()
+      
+      // Immediate nuclear response - clear everything and redirect
+      localStorage.clear()
+      sessionStorage.clear()
+      setIsAuthenticated(false)
+      window.location.href = 'https://google.com'
       return false
     }
 

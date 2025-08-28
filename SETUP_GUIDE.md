@@ -10,7 +10,7 @@ This guide will help you set up global data storage for your PasteShare applicat
 2. Click "Start your project" and sign up (free)
 3. Create a new project:
    - Choose a project name (e.g., "pasteshare")
-   - Set a database password (save this!)
+   - Set a database access key (save this!)
    - Select a region close to your users
    - Click "Create new project"
 

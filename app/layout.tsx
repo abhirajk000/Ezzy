@@ -6,8 +6,8 @@ const inter = Inter({ subsets: ['latin'] })
 const orbitron = Orbitron({ subsets: ['latin'], variable: '--font-orbitron' })
 
 export const metadata: Metadata = {
-  title: 'Ezzy - Text Editor',
-  description: 'Manage your text content efficiently',
+  title: 'Text Tools Pro - Advanced Processing',
+    description: 'Professional text analysis and formatting utilities',
 }
 
 export default function RootLayout({

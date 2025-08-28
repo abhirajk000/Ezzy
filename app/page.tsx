@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { pasteOperations, PasteItem } from '../lib/supabase'
 import { Copy, Plus, Trash2, FileText, Clock, Hash } from 'lucide-react'
-import PasswordProtection from '../components/ezzy'
+import TextProcessor from '../components/text-processor-utils'
 
 export default function Home() {
   const [pastes, setPastes] = useState<PasteItem[]>([])
@@ -15,21 +15,18 @@ export default function Home() {
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set())
 
-  // Prevent hydration mismatch by only rendering after mount
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  // Load pastes on component mount
   useEffect(() => {
     if (!mounted) return
     
     loadPastes()
     
-    // Subscribe to real-time changes
     const subscription = pasteOperations.subscribeToChanges((payload) => {
       console.log('Real-time update:', payload)
-      loadPastes() // Reload pastes when changes occur
+      loadPastes()
     })
 
     return () => {
@@ -57,7 +54,7 @@ export default function Home() {
     try {
       await pasteOperations.createPaste(newPaste.trim())
       setNewPaste('')
-      await loadPastes() // Refresh the list
+      await loadPastes()
     } catch (err) {
       console.error('Error creating paste:', err)
       setError(err instanceof Error ? err.message : 'Failed to create paste')
@@ -66,7 +63,6 @@ export default function Home() {
     }
   }
 
-  // Removed view tracking functionality
 
   const deletePaste = async (id: string) => {
     try {
@@ -100,10 +96,9 @@ export default function Home() {
     return `${Math.floor(diffInSeconds / 86400)}d ago`
   }
 
-  // Prevent hydration mismatch by showing loading state until mounted
   if (!mounted) {
     return (
-      <PasswordProtection>
+      <TextProcessor>
         <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 p-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center py-12">
@@ -112,15 +107,14 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </PasswordProtection>
+              </TextProcessor>
     )
   }
 
   return (
-    <PasswordProtection>
+    <TextProcessor>
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 p-4">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center space-x-3 mb-4">
             <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg">
@@ -129,14 +123,13 @@ export default function Home() {
           
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-3 font-orbitron">
-            Ezzy
+            Text Tools Pro
           </h1>
           <p className="text-lg text-slate-300 max-w-xl mx-auto leading-relaxed">
             Organize and manage your text.
           </p>
         </div>
 
-        {/* Create New Document */}
         <div className="bg-slate-800/40 backdrop-blur-sm rounded-2xl p-6 mb-6 border border-slate-700/30 shadow-xl">
           <div className="flex items-center space-x-2 mb-4">
             <div className="p-2 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg shadow-lg">
@@ -179,7 +172,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Error Message */}
         {error && (
           <div className="bg-red-500/10 backdrop-blur-sm border border-red-500/30 rounded-xl p-4 mb-6 shadow-lg">
             <div className="flex items-center space-x-2">
@@ -191,7 +183,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* Pastes list */}
         <div className="space-y-6">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
@@ -339,6 +330,6 @@ export default function Home() {
         </div>
       </div>
     </div>
-    </PasswordProtection>
+    </TextProcessor>
   )
 }
